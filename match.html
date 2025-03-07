@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matched Profiles</title>
+    <link rel="stylesheet" href="/matched.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Matched Profiles</h1>
+        <p>Here are travelers with matching destinations and travel preferences.</p>
+    </header>
+
+    <main class="match-container" id="match-container">
+        <!-- Profile cards will be dynamically inserted here -->
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Tripster. All rights reserved.</p>
+    </footer>
+
+    <!-- <script>
+        
+        // Function to fetch matched profiles from the backend
+        async function fetchMatchedProfiles() {
+            try {
+                const response = await fetch('http://localhost:3000/find-matches'); // Replace with your actual API endpoint
+                method: 'GET'
+                console.log(response)
+                // Check if the response is okay
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const matches = await response.json(); // Parse the JSON response
+                displayProfiles(matches);
+            } catch (error) {
+                console.error('Error fetching matched profiles:', error.message);
+                console.error(error.stack)
+                document.getElementById('profiles-container').innerHTML = '<p>Error fetching profiles. Please try again later.</p>';
+            }
+        }
+
+        // Function to display profiles in the DOM
+        function displayProfiles(matches) {
+            const profilesContainer = document.getElementById('profiles-container');
+            profilesContainer.innerHTML = ''; // Clear any previous content
+
+            if (!matches || matches.length === 0) {
+                profilesContainer.innerHTML = '<p>No matched profiles found.</p>';
+                return;
+            }
+
+            // Create cards for each profile
+            matches.forEach(match => {
+                const card = document.createElement('div');
+                card.className = 'profile-card'; // Add a class for styling
+
+                // Populate the card with profile data
+                card.innerHTML = `
+                    <div class="profile-info">
+                        <h2>${match.fullName}</h2>
+                        <p><strong>From:</strong> ${match.username}</p>
+                        <button class="connect-button">Connect</button>
+                    </div> -->
+                <!-- `;
+                profilesContainer.appendChild(card); // Append the card to the container
+            });
+        }
+
+        // Call the fetch function when the page loads
+        window.onload = fetchMatchedProfiles;
+    </script> -->
+    <script>
+        window.onload = function() {
+            const matches = JSON.parse(localStorage.getItem('tripMatches'));
+            console.log(matches);
+    
+            // Use the matches data to display on the page
+            const matchContainer = document.getElementById('match-container');
+            if (matches && matches.length > 0) {
+                matches.forEach(match => {
+                    const matchCard = document.createElement('div');
+                    matchCard.className = 'match-card';
+                    matchCard.innerHTML = `
+                    <div class="profile-info">
+                        <h2>${match.user.name}</h2>
+                        <p><strong>username</strong> ${match.user.username}</p>
+                        <p><strong>score</strong> ${match.score}</p>
+                        <button class="connect-button" data-user-id="${match.user._id}" data-status="connect">Connect</button>
+                    </div>
+                <!-- `;
+                    matchContainer.appendChild(matchCard);
+                    const connectButton = document.querySelector('.connect-button');
+                connectButton.addEventListener('click', function() {
+                    const recipientId = this.getAttribute('data-user-id');
+                    const receivername= match.user.name;
+                    console.log(recipientId)
+                    const status = this.getAttribute('data-status');
+                    console.log(status);
+                    
+                    if (status === 'connect') {
+                        sendFriendRequest(recipientId,receivername);
+                       
+                        this.textContent = 'Pending...';
+                        this.setAttribute('data-status', 'pending');
+                    }
+                });
+            });
+            } else {
+                matchContainer.innerHTML = '<p>No matches found.</p>';
+            }
+        };
+        async function sendFriendRequest(recipientId,receivername) {
+        try {
+            const response = await fetch('/send-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({recipientId,receivername})
+            });
+            const data = await response.json();
+            alert(data.message);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    // export async function getFriendRequests() {
+    //     try {
+    //         const response = await fetch('/requests');
+    //         const requests = await response.json();
+    //         const requestsList = document.getElementById('requests');
+    //         requestsList.innerHTML = '';
+    //         requests.forEach(request => {
+    //             const li = document.createElement('li');
+    //             li.textContent = `${request.sender.username} wants to connect`;
+    //             const acceptButton = document.createElement('button');
+    //             acceptButton.textContent = 'Accept';
+    //             acceptButton.onclick = () => acceptFriendRequest(request._id);
+    //             const rejectButton = document.createElement('button');
+    //             rejectButton.textContent = 'Reject';
+    //             rejectButton.onclick = () => rejectFriendRequest(request._id);
+    //             li.appendChild(acceptButton);
+    //             li.appendChild(rejectButton);
+    //             requestsList.appendChild(li);
+    //         });
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // }
+
+    // async function acceptFriendRequest(requestId) {
+    //     try {
+    //         const response = await fetch('/accept-request', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ requestId})
+    //         });
+    //         const data = await response.json();
+    //         alert(data.message);
+    //         getFriendRequests();
+    //         getFriends();
+    //         updateConnectButton(requestId, 'Disconnect');
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // }
+
+    async function rejectFriendRequest(requestId) {
+        try {
+            const response = await fetch('/reject-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ requestId })
+            });
+            const data = await response.json();
+            alert(data.message);
+            getFriendRequests();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function getFriends() {
+    try {
+        const response = await fetch('/friends');
+        const friends = await response.json();
+        const friendsList = document.getElementById('friends');
+        friendsList.innerHTML = ''; // Clear the existing list
+
+        // Iterate over each friend and create list items
+        friends.forEach(friend => {
+            const li = document.createElement('li'); // Create a new list item
+            li.textContent = friend.username; // Set the text content to the friend's username
+            
+            const disconnectButton = document.createElement('button'); // Create a disconnect button
+            disconnectButton.textContent = 'Disconnect'; // Set button text
+            disconnectButton.onclick = () => disconnectFriend(friend.id); // Set the click handler
+            
+            li.appendChild(disconnectButton); // Append the button to the list item
+            friendsList.appendChild(li); // Append the list item to the friends list
+        });
+    } catch (error) {
+        console.error('Error:', error); // Log any errors
+    }
+}
+
+
+    async function disconnectFriend(friendId) {
+        try {
+            const response = await fetch('/api/disconnect', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: currentUser .id, friendId })
+            });
+            const data = await response.json();
+            alert(data.message);
+            getFriends();
+            updateConnectButton(friendId, 'Connect');
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function updateConnectButton(userId, newText) {
+        const buttons = document.querySelectorAll('.connect-button');
+        buttons.forEach(button => {
+            if (button.getAttribute('data-user-id') === userId) {
+                button.textContent = newText;
+                button.setAttribute('data-status', newText === 'Disconnect' ? 'disconnect' : 'connect');
+            }
+        });
+    }
+        
+    </script>
+</body>
+</html>

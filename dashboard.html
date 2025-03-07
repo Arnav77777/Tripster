@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Tripster</title>
+    <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Tripster</h2>
+            <nav>
+                <ul>
+                    <li><a href="/profile.html">Profile</a></li>
+                    <li><a href="/plan.html">Plan Trips</a></li>
+                    <li><a href="#">Messages</a></li>
+                    <li><a href="/trips.html">My Trips</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>    
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Welcome, [User's Name]</h1>
+                <p>Your travel dashboard to manage and explore trips.</p>
+            </header>
+
+            <section class="dashboard-cards">
+                <div class="card">
+                    <h3>Upcoming Trips</h3>
+                    <p>See and manage your planned journeys.</p>
+                    <button class="request" id="requestsButton">view requests</button>
+
+                </div>
+                <div class="card">
+                    <h3>Recent Messages</h3>
+                    <p>Check your latest conversations with travelers.</p>
+                    <a href="/friends.html">FRIENDS</a>
+                </div>
+                <div class="card">
+                    <h3>Explore Destinations</h3>
+                    <p>Discover new places and find travel companions.</p>
+                    <a href="#">Explore</a>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div id="requestsContainer" style="display: none; position: absolute; background: white; border: 1px solid #ccc; padding: 10px; z-index: 1000;">
+        <ul id="requestsList"></ul>
+    </div>
+    <script>
+        // Function to fetch and display friend requests
+async function getFriendRequests() {
+    const requestsContainer = document.getElementById('requestsContainer');
+    try {
+        const response = await fetch('/requests');
+        const requests = await response.json();
+        const requestsList = document.getElementById('requestsList');
+        requestsList.innerHTML = ''; // Clear previous requests
+
+        requests.forEach(request => {
+            const li = document.createElement('li');
+            li.textContent = `${request.senderUsername} wants to connect`;
+            console.log(request.senderUsername)
+            const acceptButton = document.createElement('button');
+            acceptButton.textContent = 'Accept';
+            acceptButton.onclick = () => acceptFriendRequest(request._id);
+            const rejectButton = document.createElement('button');
+            rejectButton.textContent = 'Reject';
+            rejectButton.onclick = () => rejectFriendRequest(request._id);
+            li.appendChild(acceptButton);
+            li.appendChild(rejectButton);
+            requestsList.appendChild(li);
+        });
+
+        // Show the container
+        requestsContainer.style.display = 'block';
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+    async function acceptFriendRequest(requestId) {
+        try {
+            const response = await fetch('/accept-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ requestId})
+            });
+            const data = await response.json();
+            alert(data.message);
+            getFriendRequests();
+            getFriends();
+            updateConnectButton(requestId, 'Disconnect');
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function rejectFriendRequest(requestId) {
+        try {
+            const response = await fetch('/reject-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ requestId })
+            });
+            const data = await response.json();
+            alert(data.message);
+            getFriendRequests();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    document.getElementById('requestsButton').addEventListener('click', function(event) {
+    event.stopPropagation(); // Prevent the click event from bubbling up
+    getFriendRequests(); // Fetch and display friend requests
+});
+document.addEventListener('click', function(event) {
+    const requestsContainer = document.getElementById('requestsContainer');
+    if (requestsContainer.style.display === 'block' && !requestsContainer.contains(event.target)) {
+        requestsContainer.style.display = 'none'; // Hide the container
+    }
+});
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Planned Trips</title>
+    <link rel="stylesheet" href="trips.css"> <!-- Link to your CSS file -->
+</head>
+
+<body>
+    <header>
+        <h1>Your Planned Trips</h1>
+    </header>
+
+    <main id="trip-container">
+        <!-- Trip cards will be dynamically inserted here -->
+    </main>
+
+    <script>
+        // Function to fetch trip details from the server
+        async function fetchTrips() {
+            try {
+                const response = await fetch('http://localhost:3000/api/user/trip');
+                method: 'GET'
+                console.log(response)
+
+                // Check if the response is okay
+                if (!response.ok) {
+                    const errorText = await response.text(); // Read the error response body
+                    throw new Error(`Network response was not ok: ${errorText}`);
+                }
+
+                const trips = await response.json(); // Parse the JSON response
+                displayTrips(trips);
+                console.log(trips)
+            } catch (error) {
+                console.error('Error fetching trips:', error.message);
+                document.getElementById('trip-container').innerHTML = '<p>Error fetching trips. Please check the console for more details.</p>';
+            }
+        }
+
+        function displayTrips(trips) {
+            const tripContainer = document.getElementById('trip-container');
+            tripContainer.innerHTML = ''; // Clear any previous content
+
+            if (!trips || trips.length === 0) {
+                tripContainer.innerHTML = '<p>No trips found.</p>';
+                return;
+            }
+
+            // Create cards for each trip
+            trips.forEach(trip => {
+                const card = document.createElement('div');
+                card.className = 'trip-card'; // Add a class for styling
+
+                // Updated HTML for each trip card
+                card.innerHTML = `
+                    <div class="trip-details">
+                        <h3>Trip Details</h3>
+                        <p><strong>Destination:</strong> ${trip.destination}</p>
+                        <p><strong>From:</strong> ${trip.from}</p>
+                        <p><strong>Start Date:</strong> ${trip.startDate}</p>
+                        <p><strong>End Date:</strong> ${trip.endDate}</p>
+                        <p><strong>Budget:</strong> $${trip.minBudget} - $${trip.maxBudget}</p>
+                        <p><strong>Number of Tourists:</strong> ${trip.tourists}</p>
+                        <p><strong>trip id:</strong> ${trip._id}</p>
+                        <p><strong>Activities:</strong> ${trip.activities.join(', ')}</p>
+                    </div>
+                    <div class="trip-actions">
+                        <button class="action-button find-match" data-trip-id="${trip._id}" data-trip-details='${JSON.stringify(trip)}'>Find a Match</button>
+                        <button class="action-button edit-trip"><a href="plan.html">Edit Trip</a></button>
+                    </div>
+                `;
+                const findMatchButton = card.querySelector('.find-match');
+                findMatchButton.addEventListener('click', function () {
+                    const tripDetails = JSON.parse(this.getAttribute('data-trip-details'));
+                    console.log(`Trip ID: ${tripDetails._id}\nDestination: ${tripDetails.destination}\nFrom: ${tripDetails.from}\nStart Date: ${tripDetails.startDate}\nEnd Date: ${tripDetails.endDate}\nBudget: ${tripDetails.minBudget} - ${tripDetails.maxBudget}\nNumber of Tourists: ${tripDetails.tourists}\nActivities: ${tripDetails.activities.join(', ')}`);
+                    sendtrips(tripDetails)
+                    
+                    // window.location.href = "http://localhost:3000/match.html";
+                });
+
+                tripContainer.appendChild(card); // Append the card to the container
+            });
+        }
+
+        async function sendtrips(tripDetails) {
+            // Send the trip details to the server
+            const response = await fetch('/find-matches', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    currentTrip: tripDetails // Pass the trip details here
+                })
+            });
+
+            const data = await response.json();
+            console.log("matches:",data);
+            // Store the matches in local storage
+            localStorage.setItem('tripMatches', JSON.stringify(data.matches));
+            // Redirect to the matches page
+            window.location.href = "http://localhost:3000/match";
+            
+        }
+            // Call the fetch Trips function when the page loads
+        window.onload = fetchTrips;
+    </script>
+</body>
+
+</html>

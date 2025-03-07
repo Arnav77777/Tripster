@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="profile.css">
+    <style>
+        /* Hide the default file input */
+        #profile-picture {
+            display: none; /* Hide the file input */
+        }
+
+        /* Custom button style */
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Profile Banner -->
+    <section class="profile-banner">
+        <div class="overlay">
+            <h1>User Profile</h1>
+        </div>
+    </section>
+
+    <!-- Profile Information Section -->
+    <main class="profile-content">
+        <section class="profile-info">
+            <img id="profile-image" src="profile-placeholder.jpg" alt="Profile Picture" class="profile-picture">
+            <label class="custom-file-upload">
+                Choose File
+                <input type="file" id="profile-picture" name="profilePicture" accept="image/*">
+            </label>
+            <div class="info">
+                <h2>Arnav</h2>
+                <p class="username">@arnav</p>
+            </div>
+            <button class="edit-button">Edit Profile</button>
+        </section>
+
+        <!-- Editable Profile Form -->
+        <form id="edit-profile-form" class="profile-form">
+            <div class="form-group">
+                <label for="full-name">Full Name:</label>
+                <input type="text" id="full-name" name="fullName">
+            </div>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location">
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio:</label>
+                <textarea id="bio" name="bio"></textarea>
+            </div>
+            <button type="submit" class="save-button">Save Changes</button>
+        </form>
+    </main>
+    <script src="profile.js"></script>
+</body>
+</html>

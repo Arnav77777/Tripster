@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Tripster</title>
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <div class="signup-container">
+        <h1>Create Your Account</h1>
+        <p>Join Tripster and start connecting with other travelers!</p>
+        <form action="http://localhost:3000/signup" method="POST">
+            <div class="input-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="input-group">
+                <label for="Confirm password">Confirm Password</label>
+                <input type="Confirm password" id="Confirm password" name="confirmPassword" required>
+            </div>
+            
+            
+
+            <button type="submit" class="signup-button">Sign Up</button>
+            <p class="signin-link">Already have an account? <a href="login.html">Login here</a></p>
+        </form>
+    </div>
+    <!-- <script>
+        // Optional: You can also submit the form using JavaScript
+        document.getElementById("signupForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("http://localhost:3000/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+    </script> -->
+</body>
+</html>

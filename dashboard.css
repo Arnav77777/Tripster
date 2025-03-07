@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    background-color: #f4f7f9;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    background-color: #2d3e50;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.sidebar h2 {
+    margin-bottom: 2rem;
+    color: #86c5da;
+}
+
+.sidebar nav ul {
+    list-style: none;
+}
+
+.sidebar nav ul li {
+    margin-bottom: 1rem;
+}
+
+.sidebar nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.sidebar nav ul li a:hover {
+    color: #86c5da;
+}
+
+/* Main Content Styles */
+
+.dashboard-container{
+    display: flex;
+    width: 100%;
+}
+.main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    width: 100vh;
+}
+
+.main-content header {
+    margin-bottom: 2rem;
+}
+
+.main-content h1 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.main-content p {
+    color: #666;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.card h3 {
+    color: #2d3e50;
+    margin-bottom: 0.8rem;
+}
+
+.card p {
+    color: #777;
+    margin-bottom: 1rem;
+}
+
+.card a {
+    color: #86c5da;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.card a:hover {
+    text-decoration: underline;
+}
+
+
+
+#requestsContainer {
+    width: 300px; /* Set a width for the container */
+    height: 100%; /* Set height to 100% to occupy full height of the viewport */
+    max-height: 100vh; /* Set a maximum height to the viewport height */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1); /* Shadow on the left side */
+    z-index: 10000; /* Set z-index to ensure it appears above all other elements */
+    background: white; /* Ensure background is white for visibility */
+    position: fixed; /* Fix the position to the right side */
+    top: 0; /* Align to the top of the viewport */
+    right: 0; /* Align to the right side of the viewport */
+}
+
+
+#requestsList {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+
+#requestsList li {
+    padding: 10px; /* Add padding to each request */
+    border-bottom: 1px solid #eee; /* Add a bottom border */
+}
+
+#requestsList li:last-child {
+    border-bottom: none; /* Remove border from the last item */
+}
+
+button {
+    margin-left: 10px; /* Add some space between buttons */
+}

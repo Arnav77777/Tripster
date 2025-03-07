@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Friends - Tripster</title>
+    <link rel="stylesheet" href="friends.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Your Friends</h1>
+    </header>
+
+    <main class="friends-container" id="friends-container">
+        <!-- Friend cards will be dynamically inserted here -->
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Tripster. All rights reserved.</p>
+    </footer>
+
+    <script>
+        async function getFriends() {
+            try {
+                const response = await fetch('/friends'); // Fetch friends from the server
+                const friends = await response.json(); // Parse the JSON response
+                displayFriends(friends); // Call the function to display friends
+            } catch (error) {
+                console.error('Error:', error); // Log any errors
+            }
+        }
+
+        function displayFriends(friends) {
+            const friendsContainer = document.getElementById('friends-container');
+            friendsContainer.innerHTML = ''; // Clear previous content
+
+            if (!friends || friends.length === 0) {
+                friendsContainer.innerHTML = '<p>No friends found.</p>';
+                return;
+            }
+
+            friends.forEach(friend => {
+                const card = document.createElement('div');
+                card.className = 'friend-card';
+                card.innerHTML = `
+                    <h3>${friend.name}</h3>
+                    <button class="message-button" onclick="sendMessage('${friend._id}')">Message</button>
+                `;
+                friendsContainer.appendChild(card); // Append the card to the container
+            });
+        }
+
+    window.onload = getFriends;
+    </script>
+</body>
+</html>
